@@ -22,6 +22,7 @@ use Symfony\Component\Console\Application;
 use Delegator\Magegen\Console\Command\BuildCommand;
 use Delegator\Magegen\Console\Command\CheckCommand;
 use Delegator\Magegen\Console\Command\CleanCommand;
+use Delegator\Magegen\Console\Command\InitCommand;
 
 $application = new Application();
 $application->setName('Magegen - Build system for Magento extensions.');
@@ -29,4 +30,5 @@ $application->setVersion('0.0.2');
 $application->add(new BuildCommand);
 $application->add(new CheckCommand);
 $application->add(new CleanCommand);
+$application->add(new InitCommand);
 $application->run();
