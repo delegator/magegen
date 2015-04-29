@@ -1,0 +1,30 @@
+{
+    "name": "delegator/magegen",
+    "description": "Build system for Magento extensions.",
+    "authors": [
+        {
+            "name": "Tom Richards",
+            "email": "tom.r@delegator.com"
+        },
+        {
+            "name": "Bobby Burden",
+            "email": "bobby.b@delegator.com"
+        }
+    ],
+    "license": "Apache License V2",
+    "require-dev": {
+        "phpunit/phpunit": "~4.4.1",
+        "satooshi/php-coveralls": "~0.6.1",
+        "symfony/finder": "~2.6.1",
+        "symfony/process": "~2.6.1",
+        "symfony/console": "~2.6.1"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Delegator\\": "./Delegator"
+        },
+        "files": [
+            "lib/FileIterator.php"
+        ]
+    }
+}
