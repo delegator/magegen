@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use Delegator\Magegen\Console\Command\BuildCommand;
+use Delegator\Magegen\Console\Command\CheckCommand;
+use Delegator\Magegen\Console\Command\CleanCommand;
+
+$application = new Application();
+$application->setName('Magegen - Build system for Magento extensions.');
+$application->setVersion('0.0.1');
+$application->add(new BuildCommand);
+$application->add(new CheckCommand);
+$application->add(new CleanCommand);
+$application->run();

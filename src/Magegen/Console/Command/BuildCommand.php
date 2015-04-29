@@ -1,6 +1,6 @@
 <?php
 
-namespace Delegator\Build\Console\Command;
+namespace Delegator\Magegen\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,7 +22,11 @@ class BuildCommand extends Command
     {
         //Load Magento core
         $mageFile = realpath(getcwd() . '/../../app/Mage.php');
-        require_once $mageFile;
+        if (!@include_once($mageFile)) {
+            throw new \Exception ('Can\'t find Mage.php. Are you running this from your `.modman` directory?'); 
+        } else {
+            require_once($mageFile);
+        }
 
         //Boilerplate
         umask(0);

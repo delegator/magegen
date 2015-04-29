@@ -1,6 +1,6 @@
 <?php
 
-namespace Delegator\Build\Console\Command;
+namespace Delegator\Magegen\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

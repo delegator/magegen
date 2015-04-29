@@ -1,6 +1,7 @@
 {
     "name": "delegator/magegen",
     "description": "Build system for Magento extensions.",
+    "bin": ["bin/magegen"],
     "authors": [
         {
             "name": "Tom Richards",
@@ -21,7 +22,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Delegator\\": "./Delegator"
+            "Delegator\\": "./src"
         },
         "files": [
             "lib/FileIterator.php"
