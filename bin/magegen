@@ -1,7 +1,22 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
+$autoloaders = array(
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php'
+);
+
+$classLoader = false;
+foreach ($autoloaders as $autoloader) {
+    if (@include_once($autoloader)) {
+        $classLoader = $autoloader;
+        break;
+    }
+}
+
+if ($classLoader) {
+    require_once $classLoader;
+}
 
 use Symfony\Component\Console\Application;
 use Delegator\Magegen\Console\Command\BuildCommand;
