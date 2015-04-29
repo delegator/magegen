@@ -25,7 +25,7 @@ use Delegator\Magegen\Console\Command\CleanCommand;
 
 $application = new Application();
 $application->setName('Magegen - Build system for Magento extensions.');
-$application->setVersion('0.0.1');
+$application->setVersion('0.0.2');
 $application->add(new BuildCommand);
 $application->add(new CheckCommand);
 $application->add(new CleanCommand);
