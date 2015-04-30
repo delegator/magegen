@@ -20,6 +20,8 @@ class BuildCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->_buildHook('pre');
+
         //Load Magento core
         $mageFile = realpath(getcwd() . '/../../app/Mage.php');
         if (!@include_once($mageFile)) {
@@ -46,6 +48,8 @@ class BuildCommand extends Command
         $package->save($input->getOption('output-directory'));
 
         $output->writeln('<info>Done.</info>');
+
+        $this->_buildHook('post');
     }
 
     private function _generatePackageXmlFile($packageFilename, $modmanFilename)
@@ -121,5 +125,19 @@ class BuildCommand extends Command
         }
 
         return $currentNode;
+    }
+
+    private function _buildHook($stage)
+    {
+        $directory = "magegen/" . $stage . "_build";
+        if (is_dir($directory)) {
+            $dh = opendir($directory);
+
+            while (false !== ($file = readdir($dh))) {
+                if (is_file($directory . '/' . $file)) {
+                    include_once($directory . '/' . $file);
+                }
+            }
+        }
     }
 }
