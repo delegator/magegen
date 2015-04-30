@@ -69,7 +69,13 @@ class BuildCommand extends Command
         // listed in the package.xml
         $files = array();
         foreach ($modman as $line) {
-            $directory = preg_replace('/\*/', '', $line);
+
+            if (is_file($line)) {
+                $directory = preg_replace('/[^\/]+$/', '', $line);
+            } else {
+                $directory = preg_replace('/\*/', '', $line);
+            }
+
             foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory)) as $filename) {
                 // Skip files that end with a "."
                 // put the rest in the $files array
