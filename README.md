@@ -51,5 +51,4 @@ to the root of your modman repo directory and run `vendor/bin/magegen build`
 
 ## License
 
-All files released in this repository are released under the Apache License,
-Version 2.0 and copyright Delegator LLC -- UNLESS OTHERWISE NOTED IN THE FILE.
+Refer to [LICENSE.md](LICENSE.md) for license information.
