@@ -18,6 +18,8 @@ if ($classLoader) {
     require_once $classLoader;
 }
 
+require_once 'lib/FileIterator.php';
+
 use Symfony\Component\Console\Application;
 use Delegator\Magegen\Console\Command\BuildCommand;
 use Delegator\Magegen\Console\Command\CheckCommand;

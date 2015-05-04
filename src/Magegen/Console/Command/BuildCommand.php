@@ -7,8 +7,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BuildCommand extends Command
+class BuildCommand extends AbstractCommand
 {
+    protected $_hookName = 'build';
+
     protected function configure()
     {
         $this->setName('build')
@@ -20,7 +22,7 @@ class BuildCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->_buildHook('pre');
+        $this->stepHook('pre');
 
         //Load Magento core
         $mageFile = realpath(getcwd() . '/../../app/Mage.php');
@@ -49,7 +51,7 @@ class BuildCommand extends Command
 
         $output->writeln('<info>Done.</info>');
 
-        $this->_buildHook('post');
+        $this->stepHook('post');
     }
 
     private function _generatePackageXmlFile($packageFilename, $modmanFilename)
@@ -127,17 +129,4 @@ class BuildCommand extends Command
         return $currentNode;
     }
 
-    private function _buildHook($stage)
-    {
-        $directory = "magegen/" . $stage . "_build";
-        if (is_dir($directory)) {
-            $dh = opendir($directory);
-
-            while (false !== ($file = readdir($dh))) {
-                if (is_file($directory . '/' . $file)) {
-                    include_once($directory . '/' . $file);
-                }
-            }
-        }
-    }
 }

@@ -11,9 +11,10 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 use FileIterator;
 
-class CheckCommand extends Command
+class CheckCommand extends AbstractCommand
 {
     private $output;
+    protected $_hookName = 'check';
 
     protected function configure()
     {
@@ -24,12 +25,16 @@ class CheckCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->stepHook('pre');
+
         $this->output = $output;
 
         $dir = $input->getOption('cwd');
         $this->checkXmlFiles($dir);
         $this->checkPhpFiles($dir);
         $this->checkPhtmlFiles($dir);
+
+        $this->stepHook('post');
     }
 
     public function xmlLint($path)

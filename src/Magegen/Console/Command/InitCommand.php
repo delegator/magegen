@@ -7,8 +7,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InitCommand extends Command
+class InitCommand extends AbstractCommand
 {
+    protected $_hookName = 'init';
+
     protected function configure()
     {
         $this->setName('init')
@@ -17,6 +19,8 @@ class InitCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->stepHook('pre');
+
         $xmlTemplate = <<<EOX
 <?xml version="1.0"?>
 <package>
@@ -55,5 +59,7 @@ EOX;
         fwrite($xmlFile, $xmlTemplate);
         fclose($xmlFile);
         $output->writeln('<info>Done.</info>');
+
+        $this->stepHook('post');
     }
 }
