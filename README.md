@@ -41,6 +41,27 @@ building your extension:
 When you are ready to build your extension (generate a .tgz file), navigate
 to the root of your modman repo directory and run `vendor/bin/magegen build`
 
+## Hooks
+
+For some projects, you may need to compile assets or move files before building.
+To accommodate this, a simple hook system executes your code for the following
+events.
+
+|  Hook Name   |       When the hook is executed     |
+|--------------|-------------------------------------|
+| `pre_build`  | Before the 'build' command executes |
+| `post_build` | After the 'build' command executes  |
+| `pre_check`  | Before the 'check' command executes |
+| `post_check` | After the 'check' command executes  |
+| `pre_clean`  | Before the 'clean' command executes |
+| `post_clean` | After the 'clean' command executes  |
+| `pre_init`   | Before the 'init' command executes  |
+| `post_init`  | After the 'init' command executes   |
+
+To execute your code for each of these hooks, create a directory at
+`magegen/[hook_name]/`. In that directory, add PHP files that will be executed
+as the hook fires.
+
 ## Contributing
 
 1. Fork it!
