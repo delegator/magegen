@@ -27,7 +27,7 @@ class BuildCommand extends AbstractCommand
         //Load Magento core
         $mageFile = realpath(getcwd() . '/../../app/Mage.php');
         if (!@include_once($mageFile)) {
-            throw new \Exception ('Can\'t find Mage.php. Are you running this from your `.modman` directory?'); 
+            throw new \Exception ('Can\'t find Mage.php. Are you running this from your `.modman` directory?');
         } else {
             require_once($mageFile);
         }
@@ -75,6 +75,11 @@ class BuildCommand extends AbstractCommand
         // listed in the package.xml
         $files = array();
         foreach ($modman as $line) {
+
+            // Skip comments and blank lines
+            if ((strpos($line, '#') === 0) || strlen($line) === 1) {
+                continue;
+            }
 
             if (is_file($line)) {
                 $directory = preg_replace('/[^\/]+$/', '', $line);
