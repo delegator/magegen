@@ -42,10 +42,12 @@ class BuildCommand extends AbstractCommand
             $input->getOption('package-template-xml-file'),
             $input->getOption('modman-file')
         );
+        $packageXmlFile = getcwd() . '/' . $packageXmlFile;
         $output->writeln('<info>Done.</info>');
 
         //Build package
         $output->write('Building package... ');
+        chdir('../../');
         $package = new \Mage_Connect_Package($packageXmlFile);
         $package->save($input->getOption('output-directory'));
 
@@ -65,33 +67,33 @@ class BuildCommand extends AbstractCommand
 
         // Parse modman file and add directories/files to modman array
         $modmanFP = fopen($modmanFilename, 'r');
-        $modman = array();
-        while($line = fgets($modmanFP)) {
-            $parts = preg_split('/ /', $line);
-            $modman[] = $parts[0];
-        }
+        $modman = $this->_parseModmanFile($modmanFP);
 
         // Step through the modman array, find all of the files the need to be
         // listed in the package.xml
         $files = array();
         foreach ($modman as $line) {
+            $target = trim($line[0]);
+            $importPath = trim($line['importPath']);
 
-            // Skip comments and blank lines
-            if ((strpos($line, '#') === 0) || strlen($line) === 1) {
-                continue;
-            }
-
-            if (is_file($line)) {
-                $directory = preg_replace('/[^\/]+$/', '', $line);
+            if (is_file($target)) {
+                $directory = preg_replace('/[^\/]+$/', '', $target);
             } else {
-                $directory = preg_replace('/\*/', '', $line);
+                $directory = preg_replace('/\*/', '', $target);
             }
 
             foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory)) as $filename) {
                 // Skip files that end with a "."
                 // put the rest in the $files array
                 if (!preg_match('/\.$/', $filename)) {
-                    $files[$filename->getPath()][] = $filename->getFileName();
+
+                    // If this is from an imported modman file
+                    $path = $filename->getPath();
+                    if ($importPath != '') {
+                        $path = str_replace($importPath, '', $path);
+                    }
+
+                    $files[$path][] = $filename->getFileName();
                 }
             }
         }
@@ -104,7 +106,7 @@ class BuildCommand extends AbstractCommand
             foreach ($filenames as $filename) {
                 $fileNode = $node->addChild('file');
                 $fileNode->addAttribute('name', $filename);
-                $fileNode->addAttribute('hash', md5_file($dir . '/' . $filename));
+                $fileNode->addAttribute('hash', md5_file('../../' . $dir . '/' . $filename));
             }
         }
 
@@ -115,6 +117,38 @@ class BuildCommand extends AbstractCommand
         return 'package.xml';
     }
 
+    private function _parseModmanFile($fileHandle, $prefix = '')
+    {
+        $modman = array();
+
+        while ($line = fgets($fileHandle)) {
+            // Check for comments, or blank lines
+            if (preg_match('/^[#|\n]/', $line)) {
+                continue;
+            }
+
+            $parts = preg_split('/ /', $line);
+
+            // Check for '@import' lines
+            if (preg_match('/^@import/', $line)) {
+                $importedModmanFile = preg_replace('/\n/', '', $parts[1]);
+                $importedModman = fopen($importedModmanFile . '/modman', 'r');
+                $modman = array_merge(
+                    $modman,
+                    $this->_parseModmanFile($importedModman, $importedModmanFile . '/')
+                );
+                continue;
+            }
+
+            $modman[] = array(
+                0 => $prefix . $parts[0],
+                'importPath' => $prefix
+            );
+        }
+
+        return $modman;
+    }
+
     private function _findOrCreateNode($dir, &$xml)
     {
         // Split the $dir into each directory name.
@@ -122,7 +156,7 @@ class BuildCommand extends AbstractCommand
         $dirs = preg_split('/\//', $dir);
         $currentNode = $xml->contents->target;
         foreach ($dirs as $directory) {
-            $nodes = $currentNode->xpath('dir[@name="' . $directory .  '"]');
+            $nodes = $currentNode->xpath('dir[@name="' . $directory . '"]');
             if ($nodes) {
                 $currentNode = $nodes[0];
             } else {
