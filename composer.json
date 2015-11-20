@@ -14,7 +14,7 @@
       "email": "bobby.b@delegator.com"
     }
   ],
-  "license": "Apache License V2",
+  "license": "Apache-2.0",
   "require": {
     "php": ">=5.3.0",
     "symfony/finder": "~2.6.1",
