@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CleanCommand extends AbstractCommand
 {
     protected $_hookName = 'clean';
-    
+
     protected function configure()
     {
         $this->setName('clean')
